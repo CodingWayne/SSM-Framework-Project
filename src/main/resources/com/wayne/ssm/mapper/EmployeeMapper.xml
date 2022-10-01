@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wayne.ssm.mapper.EmployeeMapper">
+
+    <!--
+        mapper介面和映射文件要保證一致
+        1. mapper介面的全類名和映射文件中的namespqce一致
+        2. mapper接口中的方法的方法名要和映射文件中的sql的id保持一致
+    -->
+
+    <!--List<Employee> getAllEmployee();-->
+    <!--類型別名已在spring.xml中設置-->
+    <!--Employee成員變數名與字段名不一致之問題已在spring.xml中設置-->
+<!--    <resultMap id="emp" type="Employee">-->
+<!--        <id property="empId" column="emp_id"></id>-->
+<!--        <result property="empName" column="emp_name"></result>-->
+<!--        <result property="age" column="age"></result>-->
+<!--        <result property="gender" column="gender"></result>-->
+<!--        <result property="email" column="email"></result>-->
+<!--    </resultMap>-->
+    <select id="getAllEmployee" resultType="Employee">
+        select * from t_emp
+    </select>
+
+<!--    Employee getEmployeeById(@Param("empId") Integer empId);-->
+    <select id="getEmployeeById" resultType="Employee">
+        select * from t_emp where emp_id = #{empId}
+    </select>
+
+<!--    void save(Employee employee);-->
+    <update id="save">
+        update t_emp set emp_name = #{empName}, age = #{age}, gender = #{gender}, email = #{email} where emp_id = #{empId}
+    </update>
+
+<!--     void deleteEmployeeById(@Param("empId") Integer empId);-->
+    <delete id="deleteEmployeeById">
+        delete from t_emp where emp_id = #{empId}
+    </delete>
+
+<!--    void insertEmployee(Employee employee);-->
+    <insert id="insertEmployee">
+        insert into t_emp values (null, #{empName},#{age}, #{gender}, #{email})
+    </insert>
+
+<!--    int getNum();-->
+    <select id="getNum" resultType="int">
+        select count(emp_id) from t_emp
+    </select>
+
+
+</mapper>

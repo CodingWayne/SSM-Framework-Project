@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>員工列表</title>
+  <link rel="stylesheet" th:href="@{/static/css/index_work.css}">
+
+</head>
+
+  <body>
+  <table>
+    <tr>
+      <th colspan="6">員工列表(員工人數:<span th:text="${num}"/>)</th>
+    </tr>
+    <tr>
+      <th>序號</th>
+      <th>員工姓名</th>
+      <th>年齡</th>
+      <th>性別</th>
+      <th>電子信箱</th>
+      <th>操作 <a th:href="@{/employee/add}" style="color: coral">(增加)</a> </th>
+    </tr>
+    <tr th:each="employee,status : ${page.list}">
+      <td th:text="${status.count}"></td>
+      <td th:text="${employee.empName}"></td>
+      <td th:text="${employee.age}"></td>
+      <td th:text="${employee.gender}"></td>
+      <td th:text="${employee.email}"></td>
+      <td >
+        <form style="margin:0px;display:inline;" th:action="@{'/employee/page/'+${page.pageNum}+'/'+${employee.empId}}" method="get">
+          <input type="submit" value="修改">
+        </form>
+        <form style="margin:0px;display:inline;" th:action="@{'/employee/page/'+${page.pageNum}+'/'+${employee.empId}}" method="post">
+          <input type="hidden" name="_method" value="delete" />
+          <input type="submit" value="刪除">
+        </form>
+      </td>
+    </tr>
+
+  </table>
+
+  <div style="text-align: center">
+    <a th:if="${page.hasPreviousPage}" th:href="@{/employee/page/1}">首頁</a>
+    <a th:if="${page.hasPreviousPage}" th:href="@{'/employee/page/'+${page.prePage}}">上一頁</a>
+    <span style="font-size: medium;font-family: 'Times New Roman'" th:each="num : ${page.navigatepageNums}">
+      <a th:if="${page.pageNum == num}" style="color: red" th:href="@{'/employee/page/'+${num}}" th:text="'['+${num}+']'"></a>
+      <a th:if="${page.pageNum != num}"  th:href="@{'/employee/page/'+${num}}" th:text="${num}"></a>
+    </span>
+    <a th:if="${page.hasNextPage}" th:href="@{'/employee/page/'+${page.nextPage}}">下一頁</a>
+    <a th:if="${page.hasNextPage}" th:href="@{'/employee/page/'+${page.pages}}">末頁</a>
+  </div>
+
+</body>
+</html>

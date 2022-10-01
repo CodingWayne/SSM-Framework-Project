@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context" xmlns:tx="http://www.springframework.org/schema/tx"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context https://www.springframework.org/schema/context/spring-context.xsd http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd">
+
+    <!--掃描組件 controller給springmvc管理 其他的包給spring管-->
+    <context:component-scan base-package="com.wayne.ssm">
+        <context:exclude-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
+    </context:component-scan>
+
+    <!--引入jdbc.properties    -->
+    <context:property-placeholder location="classpath:jdbc.properties"></context:property-placeholder>
+    <!--配置數據庫來源-->
+    <bean id="dataSource" class="com.alibaba.druid.pool.DruidDataSource">
+        <property name="driverClassName" value="${jdbc.driver}"></property>
+        <property name="url" value="${jdbc.url}"></property>
+        <property name="username" value="${jdbc.username}"></property>
+        <property name="password" value="${jdbc.password}"></property>
+    </bean>
+
+    <!--配置事務管理器-->
+    <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <property name="dataSource" ref="dataSource"></property>
+    </bean>
+
+    <!--開啟事務的註解驅動
+        將使用註解@Transactional標識的方法或類中所有的方法進行事務管理
+    -->
+    <tx:annotation-driven transaction-manager="transactionManager"/>
+
+    <!--配置sqlSessionFactoryBean-->
+    <!--為工廠bean, 配置到IoC後，就可以透過這個類直接獲得工廠bean的工廠提供的對象(sqlSession)-->
+    <!--封裝4步驟
+        1.獲取核心配置文件的輸入流
+        2.獲取SqlSessionFactoryBuilder對象
+        3.獲取SqlSessionFactory對象
+        4.獲取sql的會話對象SqlSessiuon, 是Mybatis提供的操作DB的對象
+    -->
+    <bean class="org.mybatis.spring.SqlSessionFactoryBean">
+        <!--建立sqlsessionfactory一樣要設置DB連接-->
+        <!--要就在這寫 不然就是在mybatis配置文中寫-->
+        <!--設置數據源，如果DB配置在mybatis-config裡寫好了，直接設置Mybatis的核心配置文件路徑-->
+        <!--駝峰轉換與分頁插件定義於mybatis-config-->
+         <property name="configLocation" value="classpath:mybatis-config.xml"></property>
+        <!--在這設置數據源 但已在spring配置文間中設定 直接引用-->
+        <property name="dataSource" ref="dataSource"></property>
+        <!--設置類型別名對應的包-->
+        <property name="typeAliasesPackage" value="com.wayne.ssm.pojo"></property>
+        <!--設置映射文件路徑. 當mapper接口與mapper配置文件在相同的包下時可以不設置，但在不同的包下要設定-->
+        <!--<property name="mapperLocations" value="classpath:mappers/*.xml"></property>-->
+        <!--EmployeeMapper.java: com.wayne.ssm.mapper.EmployeeMapper-->
+        <!--EmployeeMapper.xml : com/wayne/ssm/mapper/EmployeeMapper.xml-->
+
+        <!--配置分頁插件 在Mybatis-config中配置-->
+<!--        <property name="plugins">-->
+<!--            <array>-->
+<!--                <bean class="com.github.pagehelper.PageInterceptor"></bean>-->
+<!--            </array>-->
+<!--        </property>-->
+    </bean>
+
+    <!--配置mapper接口的掃瞄-->
+    <!--可以將指定包下的所有mapper接口，通過SqlSession建立代理實現類對象，並將這些對象交給IoC管理-->
+    <!--在得到獲取sql的會話對象SqlSessiuon後，封裝sqlSession.getMapper，通過掃描瞄包後自動獲取每個mapper接口的代理類
+    -->
+    <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+        <property name="basePackage" value="com.wayne.ssm.mapper"></property>
+    </bean>
+    
+</beans>

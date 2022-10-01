@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration
+        PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+
+    <settings>
+        <!--將下劃線映射為駝峰 -->
+        <setting name="mapUnderscoreToCamelCase" value="true"/>
+    </settings>
+
+    <!--設置類型別名, 已在Spring.xml中配置-->
+
+
+    <!--DB連接, 已在Spring.xml中配置-->
+
+    <!--引入映射文件 Spring.xml中配置-->
+
+    <plugins>
+        <!--配置分頁插件-->
+        <plugin interceptor="com.github.pagehelper.PageInterceptor"></plugin>
+    </plugins>
+
+
+</configuration>
